@@ -4,6 +4,7 @@ import TableHobbies from "@/components/TableHobbies"
 import ModalFormView from "@/components/ModalFormView"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react";
 
 export default function HobbiesClient({ hobbies }: any) {
     const router = useRouter()
@@ -25,9 +26,12 @@ export default function HobbiesClient({ hobbies }: any) {
         router.refresh()
     }
 
-    // async function handleUpdate(hobby: string) {
-    //     await fetch(`http://127.0.0.1:8000/api/hobby/${editId}`)
-    // }
+
+    async function handleLogout() {
+        await signOut({
+            callbackUrl: "/auth/login",
+        });
+    }
 
     return (
         <>
@@ -42,7 +46,7 @@ export default function HobbiesClient({ hobbies }: any) {
 
                 <TableHobbies hobbies={hobbies} />
 
-                <button className="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</button>
+                <button onClick={handleLogout} className="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</button>
             </div >
         </>
     )
