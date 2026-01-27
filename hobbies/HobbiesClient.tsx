@@ -5,12 +5,14 @@ import ModalFormView from "@/components/ModalFormView"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react";
+import ModalClient from "@/components/ModalClient"
 
 export default function HobbiesClient({ hobbies }: any) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     const router = useRouter()
     const [newHobby, setNewHobby] = useState("")
+    const [openModalDelete, setModalDelete] = useState(false)
 
 
     async function handleCreate(hobby: string) {
@@ -48,8 +50,29 @@ export default function HobbiesClient({ hobbies }: any) {
 
                 <TableHobbies hobbies={hobbies} />
 
-                <button onClick={handleLogout} className="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</button>
+                <button onClick={() => setModalDelete(true)} className="mt-6 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</button>
             </div >
+
+            <ModalClient open={openModalDelete} title="Logout Akun"  >
+                <p className="mb-6">Yakin ingin logout dari akun ini?</p>
+                <div className="flex justify-end gap-2">
+                    <button
+                        onClick={() => setModalDelete(false)}
+                        className="bg-gray-300 px-4 py-2 rounded"
+                    >
+                        Batal
+                    </button>
+                    <button
+                        onClick={async () => {
+                            await handleLogout()
+                            setModalDelete(false)
+                        }}
+                        className="bg-red-600 text-white px-4 py-2 rounded"
+                    >
+                        Ya, Logout
+                    </button>
+                </div>
+            </ModalClient>
         </>
     )
 }
