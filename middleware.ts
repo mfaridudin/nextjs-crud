@@ -4,13 +4,28 @@ import { NextResponse } from "next/server";
 export default withAuth(
     function middleware(req) {
         const isAuth = !!req.nextauth.token;
-        const isLoginPage =
-            req.nextUrl.pathname.startsWith("/auth/login") ||
-            req.nextUrl.pathname.startsWith("/auth/register") ||
-            req.nextUrl.pathname.startsWith("/auth/forgot-password");
+        const pathname = req.nextUrl.pathname;
 
-        if (isAuth && isLoginPage) {
-            return NextResponse.redirect(new URL("/", req.url));
+        const authPages = [
+            "/auth/login",
+            "/auth/register",
+            "/auth/forgot-password",
+        ];
+
+        const isAuthPage = authPages.some((path) =>
+            pathname.startsWith(path)
+        );
+
+        if (!isAuth && !isAuthPage) {
+            return NextResponse.redirect(
+                new URL("/auth/login", req.url)
+            );
+        }
+
+        if (isAuth && isAuthPage) {
+            return NextResponse.redirect(
+                new URL("/", req.url)
+            );
         }
 
         return NextResponse.next();
@@ -24,8 +39,6 @@ export default withAuth(
 
 export const config = {
     matcher: [
-        "/auth/login",
-        "/auth/register",
-        "/auth/forgot-password",
+        "/((?!api|_next|favicon.ico).*)",
     ],
 };
