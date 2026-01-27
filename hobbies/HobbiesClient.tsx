@@ -7,12 +7,14 @@ import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react";
 
 export default function HobbiesClient({ hobbies }: any) {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
     const router = useRouter()
     const [newHobby, setNewHobby] = useState("")
 
 
     async function handleCreate(hobby: string) {
-        await fetch("http://127.0.0.1:8000/api/hobby", {
+        await fetch(`${apiUrl}/hobby`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

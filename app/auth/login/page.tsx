@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function page() {
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const router = useRouter()
@@ -29,13 +30,17 @@ export default function page() {
         router.push("/");
     }
 
+    async function hadleLoginGoogle() {
+        window.location.href = "http://127.0.0.1:8000/google/redirect?type=next"
+    }
+
     return (
         <>
             <div className="bg-gray-5">
                 <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
                     <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
                         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-                            
+
                             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                                 Sign in an account
                             </h1>
@@ -72,7 +77,7 @@ export default function page() {
                                 </div>
                             </div>
 
-                            <button className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-md hover:bg-gray-50 transition">
+                            <button onClick={hadleLoginGoogle} className="w-full flex items-center justify-center gap-3 py-3 border border-gray-300 rounded-md hover:bg-gray-50 transition">
                                 <img src="//www.gstatic.com/images/branding/searchlogo/ico/favicon.ico" alt="Google" className="w-5 h-5" />
                                 <span className="font-medium text-gray-700">Sign in with Google</span>
                             </button>

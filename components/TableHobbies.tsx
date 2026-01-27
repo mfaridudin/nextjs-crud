@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation"
 import ModalClient from "./ModalClient"
 
 export default function TableHobbies({ hobbies }: any) {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
     const [editId, setEditId] = useState("")
     const [editHobby, setEditHobby] = useState("")
     const [openModal, setOpenModal] = useState(false)
@@ -14,7 +16,7 @@ export default function TableHobbies({ hobbies }: any) {
 
 
     async function handleUpdate(hobby: string) {
-        await fetch(`http://127.0.0.1:8000/api/hobby/${editId}`, {
+        await fetch(`${apiUrl}/hobby/${editId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
@@ -30,7 +32,7 @@ export default function TableHobbies({ hobbies }: any) {
     }
 
     async function handleDelete() {
-        await fetch(`http://127.0.0.1:8000/api/hobby/${deleteId}`, {
+        await fetch(`${apiUrl}/hobby/${deleteId}`, {
             method: "DELETE"
         })
 
