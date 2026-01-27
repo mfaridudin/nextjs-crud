@@ -6,7 +6,8 @@ export default withAuth(
         const isAuth = !!req.nextauth.token;
         const isLoginPage =
             req.nextUrl.pathname.startsWith("/auth/login") ||
-            req.nextUrl.pathname.startsWith("/auth/register");
+            req.nextUrl.pathname.startsWith("/auth/register") ||
+            req.nextUrl.pathname.startsWith("/auth/forgot-password");
 
         if (isAuth && isLoginPage) {
             return NextResponse.redirect(new URL("/", req.url));
@@ -25,5 +26,6 @@ export const config = {
     matcher: [
         "/auth/login",
         "/auth/register",
+        "/auth/forgot-password",
     ],
 };
