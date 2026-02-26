@@ -3,6 +3,7 @@
 import { useParams, useSearchParams } from "next/navigation"
 import { useRouter } from "next/navigation";
 import { useState } from "react"
+import toast from "react-hot-toast";
 
 export default function page() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -22,30 +23,34 @@ export default function page() {
         e.preventDefault()
         setValidation({})
 
-        const res = await fetch(`${apiUrl}/reset-password`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                token,
-                email,
-                password,
-                password_confirmation,
-            }),
-        })
-
-        const data = await res.json()
-
-        if (!res.ok) {
-            setValidation({
-                general: [data.message],
+        try {
+            const res = await fetch(`${apiUrl}/reset-password`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    token,
+                    email,
+                    password,
+                    password_confirmation,
+                }),
             })
-            return
-        }
 
-        alert(data.message)
-        router.push("/login")
+            const data = await res.json()
+
+            if (!res.ok) {
+                setValidation({
+                    general: [data.message],
+                })
+                return
+            }
+
+            alert(data.message)
+            router.push("/login")
+        } catch (error) {
+            toast.error("Server tidak terhubung!");
+        }
     }
 
 

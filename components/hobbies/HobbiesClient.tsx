@@ -6,6 +6,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react";
 import ModalClient from "@/components/ModalClient"
+import { error } from "console"
+import toast from "react-hot-toast"
 
 export default function HobbiesClient({ hobbies }: any) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -16,25 +18,35 @@ export default function HobbiesClient({ hobbies }: any) {
 
 
     async function handleCreate(hobby: string) {
-        await fetch(`${apiUrl}/hobby`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                hobby: hobby,
-            }),
-        })
+        try {
+            await fetch(`${apiUrl}/hobby`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    hobby: hobby,
+                }),
+            })
 
-        setNewHobby("")
-        router.refresh()
+            toast.success("Hobi berhasil ditambahkan")
+            setNewHobby("")
+            router.refresh()
+        } catch (error) {
+            toast.error("Gagal menambahkan hobi")
+        }
     }
 
 
     async function handleLogout() {
-        await signOut({
-            callbackUrl: "/auth/login",
-        });
+        try {
+            await signOut({
+                callbackUrl: "/auth/login",
+            });
+            toast.success("Logout Berhasil")
+        } catch (error) {
+            toast.error("Logout Gagal")
+        }
     }
 
     return (

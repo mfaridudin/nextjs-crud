@@ -1,4 +1,4 @@
-import HobbiesClient from "@/hobbies/HobbiesClient"
+import HobbiesClient from "@/components/hobbies/HobbiesClient"
 
 export default async function Page() {
 

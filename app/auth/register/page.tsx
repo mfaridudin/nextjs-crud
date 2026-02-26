@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
+import toast from "react-hot-toast";
 
 export default function page() {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -13,33 +14,40 @@ export default function page() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [password_confirmation, setPasswordConfirmation] = useState("")
-
+    const [loading, setLoading] = useState(false)
     const [validation, setValidation] = useState<any>({});
 
     const router = useRouter()
 
     async function handleRegister(e: React.FormEvent) {
         e.preventDefault();
+        setLoading(true);
+        try {
+            const response = await fetch(`${apiUrl}/register`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                    password,
+                    password_confirmation,
+                }),
+            })
 
-        const response = await fetch(`${apiUrl}/register`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                name,
-                email,
-                password,
-                password_confirmation,
-            }),
-        })
-
-        if (!response.ok) {
-            const data = await response.json();
-            setValidation(data.errors);
-            return;
+            if (!response.ok) {
+                const data = await response.json();
+                setValidation(data.errors);
+                return;
+            }
+            toast.success("Registrasi berhasil, silahkan login!");
+            router.push("/auth/login");
+        } catch (error) {
+            toast.error("Server tidak terhubung!");
+        } finally {
+            setLoading(false);
         }
-        router.push("/auth/login");
     }
 
     return (
@@ -54,7 +62,7 @@ export default function page() {
                             <form className="space-y-4 md:space-y-6" onSubmit={handleRegister}>
                                 <div>
                                     <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-900">Your name</label>
-                                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="your name" required></input>
+                                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} name="name" id="name" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="your name"></input>
                                     {
                                         validation.name && (
                                             <span className="text-red-500 text-sm">{validation.name[0]}</span>
@@ -63,7 +71,7 @@ export default function page() {
                                 </div>
                                 <div>
                                     <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your email</label>
-                                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" required />
+                                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} name="email" id="email" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" placeholder="name@company.com" />
                                     {
                                         validation.name && (
                                             <span className="text-red-500 text-sm">{validation.email[0]}</span>
@@ -72,7 +80,7 @@ export default function page() {
                                 </div>
                                 <div>
                                     <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900">Password</label>
-                                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2" required />
+                                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} name="password" id="password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2" />
                                     {
                                         validation.password && (
                                             <span className="text-red-500 text-sm">{validation.password[0]}</span>
@@ -81,7 +89,7 @@ export default function page() {
                                 </div>
                                 <div>
                                     <label htmlFor="confirm-password" className="block mb-2 text-sm font-medium text-gray-900">Confirm password</label>
-                                    <input type="password" value={password_confirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required />
+                                    <input type="password" value={password_confirmation} onChange={(e) => setPasswordConfirmation(e.target.value)} name="confirm-password" id="confirm-password" placeholder="••••••••" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" />
                                     {
                                         validation.password_confirmation && (
                                             <span className="text-red-500 text-sm">{validation.password_confirmation[0]}</span>
@@ -89,7 +97,9 @@ export default function page() {
                                     }
                                 </div>
 
-                                <button type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">{"Create an account"}</button>
+                                <button disabled={loading} type="submit" className="w-full text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                                    {loading ? "Loading..." : "Create an account"}
+                                </button>
                                 <p className="text-sm font-light text-gray-500">
                                     Already have an account? <Link href="/auth/login" className="font-medium text-blue-600 hover:underline">Login here</Link>
                                 </p>

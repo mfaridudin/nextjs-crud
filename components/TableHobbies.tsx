@@ -3,6 +3,7 @@ import ModalEditClient from "./ModalEditClient"
 import ButtonViewClient from "./ButtonViewClient"
 import { useRouter } from "next/navigation"
 import ModalClient from "./ModalClient"
+import toast from "react-hot-toast"
 
 export default function TableHobbies({ hobbies }: any) {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -16,28 +17,38 @@ export default function TableHobbies({ hobbies }: any) {
 
 
     async function handleUpdate(hobby: string) {
-        await fetch(`${apiUrl}/hobby/${editId}`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                hobby: hobby,
-            }),
-        })
+        try {
+            await fetch(`${apiUrl}/hobby/${editId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    hobby: hobby,
+                }),
+            })
 
-        setEditId("")
-        setEditHobby("")
-        router.refresh()
+            toast.success("Hobi berhasil diEdit")
+            setEditId("")
+            setEditHobby("")
+            router.refresh()
+        } catch (error) {
+            toast.error("Gagal mengedit hobi")
+        }
     }
 
     async function handleDelete() {
-        await fetch(`${apiUrl}/hobby/${deleteId}`, {
-            method: "DELETE"
-        })
+        try {
+            await fetch(`${apiUrl}/hobby/${deleteId}`, {
+                method: "DELETE"
+            })
 
-        setDeleteId("")
-        router.refresh()
+            toast.success("Hobi berhasil dihapus")
+            setDeleteId("")
+            router.refresh()
+        } catch (error) {
+            toast.error("Gagal menghapus hobi")
+        }
     }
     return (
         <>
