@@ -6,7 +6,6 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { signOut } from "next-auth/react";
 import ModalClient from "@/components/ModalClient"
-import { error } from "console"
 import toast from "react-hot-toast"
 
 export default function HobbiesClient({ hobbies }: any) {

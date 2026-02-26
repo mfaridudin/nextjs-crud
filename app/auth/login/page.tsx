@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { use, useEffect, useState } from "react"
 import toast from "react-hot-toast"
 
 export default function page() {

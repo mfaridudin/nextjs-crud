@@ -5,6 +5,7 @@ import { useSearchParams, useRouter } from "next/navigation"
 import { signIn } from "next-auth/react"
 
 export default function GoogleCallbackPage() {
+    console.log("PAGE RENDERED")
     const searchParams = useSearchParams()
     const router = useRouter()
 

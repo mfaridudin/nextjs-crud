@@ -10,6 +10,7 @@ export default withAuth(
             "/auth/login",
             "/auth/register",
             "/auth/forgot-password",
+            "/google-callback"
         ];
 
         const isAuthPage = authPages.some((path) =>
